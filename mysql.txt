@@ -1,5 +1,42 @@
-事务的四个特征：
-	原子性
-	一致性
-	持久性
-	隔离性
+2、事务的四个特征：
+	原子性： 几个操作是一个整体，要么全部成功，要不全部回滚
+	一致性： 数据在操作前后保持一致，比如转账操作，操作前后，两个账户的总金额不变
+	持久性： 数据一旦改变，就保持持久生效
+	隔离性： 数据操作不相互影响
+	
+1、学习一个mysql 函数： coalesce：将返回传入的参数中第一个非null的值，比如 
+SELECT COALESCE(NULL, NULL, 1); 
+ Return 1 
+ 
+ 熟悉常用的sql语句，外键  链接
+ 练习表：
++-------------+----+
+| companyName | id |
++-------------+----+
+| renren      |  1 |
+| zhihu       |  3 |
+| baidu       |  6 |
+| gaode       |  9 |
+| bluegogo    | 10 |
++-------------+----+
+表2：
+
++------+----------+---------------+
+| id   | numHired | fiscalQuarter |
++------+----------+---------------+
+|    1 |        3 |             3 |
+|    1 |        5 |             4 |
+|    3 |        8 |             1 |
+|    9 |        2 |             1 |
+|    6 |        0 |             4 |
++------+----------+---------------+ 
+ 1、查询第四季度雇佣过员工的公司
+ select companyName from company,employeesHired where company.id=employeesHired.id  and numHired>0;    
+ 
+ 2、查询一年内未雇佣员工的公司
+ select companyName from company where id not in (select id  from employeesHired where numHired>0);
+ 
+ 3、查询所有公司雇佣的人数的和
+ select companyName, coalesce(sum(numHired),0) from company left outer join employeesHired  on  company.id=employeesHired.id group by companyName;
+ 
+ 
